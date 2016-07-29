@@ -2,7 +2,7 @@
 
 // Instantiate a new graph
 var Graph = function() {
-	this.nodes = {};
+  this.nodes = {};
 };
 
 // Add a node to the graph, passing in the node's value.
@@ -68,4 +68,4 @@ var GraphNode = function(value) {
   node.edgeWith = {};
 
   return node;
-  };
+};

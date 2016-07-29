@@ -8,20 +8,20 @@ var Queue = function() {
 
   someInstance.enqueue = function(value) {
     var indexArray = Object.keys(storage);
-    var index  = someInstance.size() === 0 ? 0 : Math.max.apply(null, indexArray) + 1;
+    var index = someInstance.size() === 0 ? 0 : Math.max.apply(null, indexArray) + 1;
     storage[index] = value;
   };
 
   someInstance.dequeue = function() {
     var indexArray = Object.keys(storage);
-    var index  = Math.min.apply(null, indexArray);
+    var index = Math.min.apply(null, indexArray);
     var temp = storage[index];
     delete storage[index];
     return temp;    
   };
 
   someInstance.size = function() {
-  return Object.keys(storage).length;
+    return Object.keys(storage).length;
   };
 
   return someInstance;
