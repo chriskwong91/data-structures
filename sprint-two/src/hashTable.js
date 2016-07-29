@@ -67,18 +67,12 @@ HashTable.prototype.remove = function(k) {
 
 HashTable.prototype.double = function () {
   var newHashtable = new HashTable(this._limit * 2);
-  var tupleArray = [];
-  var tuple, bucket;
+  var bucket;
   for (var i = 0; i < this._limit; i++) {
     bucket = this._storage.get(i);
-    _.each(bucket, function(x) {
-      tupleArray.push(x);
+    _.each(bucket, function(tuple) {
+      newHashtable.insert(tuple[0], tuple[1]);
     });
-  }
-
-  for (var i = 0; i < tupleArray.length; i++) {
-    tuple = tupleArray[i];
-    newHashtable.insert(tuple[0], tuple[1]);
   }
 
   this._limit = newHashtable._limit;
@@ -87,18 +81,12 @@ HashTable.prototype.double = function () {
 
 HashTable.prototype.halve = function () {
   var newHashtable = new HashTable(this._limit / 2);
-  var tupleArray = [];
-  var tuple, bucket;
+  var bucket;
   for (var i = 0; i < this._limit; i++) {
     bucket = this._storage.get(i);
-    _.each(bucket, function(x) {
-      tupleArray.push(x);
+    _.each(bucket, function(tuple) {
+      newHashtable.insert(tuple[0], tuple[1]);
     });
-  }
-
-  for (var i = 0; i < tupleArray.length; i++) {
-    tuple = tupleArray[i];
-    newHashtable.insert(tuple[0], tuple[1]);
   }
 
   this._limit = newHashtable._limit;
