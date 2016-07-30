@@ -1,152 +1,86 @@
 var BinarySearchTree = function(value) {
+
   this.value = value;
   this.left = null;
   this.right = null;
-  this.nodeCount = 0;
-  this.height = 0;
 };
 
 BinarySearchTree.prototype.insert = function(value) {
   var branch = new BinarySearchTree(value);
-  var newHeight = 0;
-  var check = function (node) {
-    newHeight++;
-    if (branch.value < node.value) {
-      if (node.left !== null) {
-        check(node.left);
-      } else {
-        node.left = branch; 
-      }
-      
-    } else if (branch.value > node.value) {
-      if (node.right !== null) {
-        check(node.right);
-      } else {
-        node.right = branch;
-      }
+
+  var findPos = function(node) {
+    var nodeVal = node.value;
+    var right = node.right;
+    var left = node.left;
+
+    if (value > nodeVal && right === null) {
+      node.right = branch;
+    } else if (value > nodeVal) {
+      findPos(right);
     }
+
+    if (value < nodeVal && left === null) {
+      node.left = branch;
+    }else if (value < nodeVal){
+      findPos(left);
+    }
+
   };
-
-  check(this);
-  
-  if (newHeight > this.height) { this.height = newHeight; }
-  this.nodeCount++;
-
-  var imbalance = this.height - Math.log2(this.nodeCount); 
-
-  if (imbalance > 3) { this.balance(); }
-  
+  findPos(this);
 };
-
 
 BinarySearchTree.prototype.contains = function(value) {
   var found = false;
 
-  //recursion
-  var check = function(node) {
-    if (found === true) { return; }
-    if (node !== null) {
-      if (node.value === value) { 
-        found = true; 
-      } else {
-        check(node.left);
-        check(node.right);
-      }
+  var findValue = function (node) {
+    if  (found === true) { return true; }
+    if (node.value === value) {
+      found = true;
+      return;
+    }
+    if (node.right !== null && value > node.value) {
+      findValue(node.right);
+    } else if (node.left !== null && value > node.value){
+      findValue(node.left);
     }
   };
 
-  check(this);
+  findValue(this);
   return found;
 };
 
 BinarySearchTree.prototype.depthFirstLog = function(callback) {
-  var array = this.grabAllNodes();
-  _.each(array, function (item) { callback(item.value); });
-};
-
-BinarySearchTree.prototype.grabAllNodes = function() {
-  var nodeArray = [];
 
   var check = function(node) {
-    if (node !== null) {
-      nodeArray.push(node);
+    callback(node.value);
+    if (node.left !== null) {
       check(node.left);
+    }
+    if (node.right !== null) {
       check(node.right);
     }
   };
-
   check(this);
-
-  return nodeArray;
 };
 
-BinarySearchTree.prototype.balance = function() {
-  var nodes = this.grabAllNodes();
-  var middleOf = function (array) {
-    return Math.floor(array.length / 2);
-  };
+BinarySearchTree.prototype.breadthFirstLog = function(callback) {
 
-  var populateTree = function (array) {
-    if (array.length !== 0) {
-      var array1 = array.slice(0, middleOf(array));
-      var array2 = array.slice(middleOf(array));
-      balancedTree._insert(array1.splice(middleOf(array1), 1)[0]);
-      balancedTree._insert(array2.splice(middleOf(array2), 1)[0]);
-      populateTree(array1);
-      populateTree(array2);
-    }
-  };
+  var check = function(nodes) {
+    parents = nodes;
+    var children = [];
 
-  nodes = _.map(nodes, function (x) { return x.value; });
-  nodes.sort(function (a, b) { return a - b; });
-  
-  var balancedTree = new BinarySearchTree(nodes.splice( Math.floor(nodes.length / 2), 1)[0]);
-
-  populateTree(nodes);
-
-  this.value = balancedTree.value;
-  this.left = balancedTree.left;
-  this.right = balancedTree.right;
-  this.height = balancedTree.height;
-};
-
-BinarySearchTree.prototype.height = function() {
-  var height = 0;
-
-  var check = function(node) {
-    if (node !== null) {
-
-    }
-  };
-};
-
-BinarySearchTree.prototype._insert = function (value) {
-  var branch = new BinarySearchTree(value);
-  var newHeight = 0;
-  var check = function (node) {
-    newHeight++;
-    if (branch.value < node.value) {
-      if (node.left !== null) {
-        check(node.left);
-      } else {
-        node.left = branch; 
+    for(var i = 0; i < parents.length; i++) {
+      if (parents[i].left !== null) {
+        children.push(parents[i].left);
       }
-      
-    } else if (branch.value > node.value) {
-      if (node.right !== null) {
-        check(node.right);
-      } else {
-        node.right = branch;
+      if (parents[i].right !== null) {
+        children.push(parents[i].right);
       }
+      callback(parents[i].value);
     }
-  };
 
-  check(this);
-  
-  if (newHeight > this.height) { this.height = newHeight; }
-  this.nodeCount++;
+    if (children.length > 0 ) { check(children); }
+  };
+  check([this]);
 };
 
-/*
- * Complexity: What is the time complexity of the above functions?
- */
